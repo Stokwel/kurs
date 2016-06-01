@@ -41,7 +41,7 @@ $config = [
             'class' => '\yii\mongodb\Connection',
             'dsn' => 'mongodb://localhost:27017/test',
         ],
-        //'db' => require(__DIR__ . '/db.php'),
+        'db' => require(__DIR__ . '/db.php'),
 
         'urlManager' => [
             'enablePrettyUrl' => true,

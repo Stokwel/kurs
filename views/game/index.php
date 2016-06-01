@@ -9,7 +9,6 @@ use \yii\helpers\Url;
 /* @var $dataProvider yii\data\ActiveDataProvider */
 
 $this->title = 'Games';
-$this->params['breadcrumbs'][] = $this->title;
 ?>
 <div class="game-index">
 
@@ -21,7 +20,7 @@ $this->params['breadcrumbs'][] = $this->title;
     </p>
     <?= GridView::widget([
         'dataProvider' => $dataProvider,
-        'filterModel'  => $searchModel,
+        /*'filterModel'  => $searchModel,*/
         'columns'      => [
             ['class' => 'yii\grid\SerialColumn'],
             '_id',
@@ -30,15 +29,16 @@ $this->params['breadcrumbs'][] = $this->title;
             [
                 'header' => 'Manage',
                 'class' => 'yii\grid\Column',
-                'content' => function ($model, $key, $index, $column) {
-                    $content = Html::a('Manage GP', Url::to([
+                'content' => function ($model, $key, $index, $column) { /* @var $model \app\models\Game */
+
+                    $content = Html::a('Manage GP ('.$model->getProductsCount().')', Url::to([
                         'products',
                         'id' => (string)$model->_id
                     ]), [
                         'class' => 'btn btn-success',
                         'style' => 'margin-right: 10px;'
                     ]);
-                    $content .= Html::a('Manage SP', Url::to([
+                    $content .= Html::a('Manage SP ('.$model->getStoreProductsCount().')', Url::to([
                         'store-products',
                         'id' => (string)$model->_id
                     ]), ['class' => 'btn btn-success']);

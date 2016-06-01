@@ -19,7 +19,6 @@ $this->params['breadcrumbs'][] = $gameModel->name;
     </p>
     <?= GridView::widget([
         'dataProvider' => $dataProvider,
-        'filterModel'  => $searchModel,
         'columns'      => [
             ['class' => 'yii\grid\SerialColumn'],
             'name',

@@ -18,7 +18,7 @@ class GameSearch extends Game
     public function rules()
     {
         return [
-            [['_id', 'name', 'title', 'stores', 'products'], 'safe'],
+            [['_id', 'name', 'title', 'storeProducts', 'products'], 'safe'],
         ];
     }
 
@@ -60,7 +60,7 @@ class GameSearch extends Game
         $query->andFilterWhere(['like', '_id', $this->_id])
             ->andFilterWhere(['like', 'name', $this->name])
             ->andFilterWhere(['like', 'title', $this->title])
-            ->andFilterWhere(['like', 'stores', $this->stores])
+            ->andFilterWhere(['like', 'storesProducts', $this->storeProducts])
             ->andFilterWhere(['like', 'products', $this->products]);
 
         return $dataProvider;

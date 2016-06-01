@@ -1,16 +1,17 @@
 <?php
 
 use yii\helpers\Html;
+use yii\helpers\Url;
 
 /* @var $this yii\web\View */
 /* @var $model app\models\GameProduct */
 /* @var $gameModel app\models\Game */
 
 
-$this->title = 'Update Game: ' . $model->name;
-$this->params['breadcrumbs'][] = ['label' => 'Games', 'url' => ['index']];
-//$this->params['breadcrumbs'][] = ['label' => $model->name, 'url' => ['view', 'id' => (string)$model->_id]];
-$this->params['breadcrumbs'][] = 'Update';
+$this->title = 'Update Game Product';
+$this->params['breadcrumbs'][] = ['label' => 'Game product', 'url' => Url::to(['products', 'id' => (string)$gameModel->_id])];
+$this->params['breadcrumbs'][] = $gameModel->name;
+
 $this->registerJsFile('@web/js/game/product-form.js', ['depends' => ['yii\web\YiiAsset']]);
 ?>
 <div class="game-update">

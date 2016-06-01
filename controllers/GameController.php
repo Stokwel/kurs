@@ -6,9 +6,12 @@ use app\models\GameProduct;
 use app\models\Game;
 use app\models\GameSearch;
 use app\models\StoreProduct;
-use app\models\Store;
 use Yii;
+use app\models\Store;
 use yii\data\ArrayDataProvider;
+use yii\db\Connection;
+use yii\db\Query;
+use yii\helpers\Url;
 use yii\web\Controller;
 use yii\web\NotFoundHttpException;
 use yii\filters\VerbFilter;
@@ -32,6 +35,72 @@ class GameController extends Controller
                 ],
             ],
         ];
+    }
+
+    public function actionExport()
+    {
+        $db = new Connection([
+            'dsn' => 'mysql:host=localhost;dbname=ubs',
+            'username' => 'root',
+            'password' => 'gw4t3sns',
+            'charset' => 'utf8',
+        ]);
+
+        $sql = 'SELECT * FROM Game ORDER BY id ASC';
+        $games = $db->createCommand($sql)->queryAll();
+
+        $export = [];
+        foreach ($games as $game) {
+            $export[$game['id']] = [
+                'name' => $game['name'],
+                'title' => $game['title'],
+                'storeProducts' => [],
+                'products' => [],
+            ];
+        }
+
+        $sql = 'SELECT * FROM GameProduct ORDER BY id ASC';
+        $gp = $db->createCommand($sql)->queryAll();
+        foreach ($gp as $product) {
+            $tmpProduct = [
+                'name' => $product['name'],
+                'description' => $product['description'],
+                'isPackage' => $product['is_package'],
+                'image' => $product['image'],
+                'data' => $product['data'],
+                'package' => []
+            ];
+
+            if ($product['is_package']) {
+                $sql = 'SELECT count, name FROM Package LEFT JOIN GameProduct ON GameProduct.id = Package.child_id WHERE parent_id = '.$product['id'].' ORDER BY Package.id ASC';
+                $package = $db->createCommand($sql)->queryAll();
+                foreach ($package as $item) {
+                    $tmpProduct['package'][] = [
+                        'name' => $item['name'],
+                        'count' => $item['count']
+                    ];
+                }
+            }
+
+            $export[$product['game_id']]['products'][] = $tmpProduct;
+        }
+
+        $sql = 'SELECT StoreProduct.*, GameProduct.name as gpName FROM StoreProduct LEFT JOIN GameProduct ON StoreProduct.gameProduct_id = GameProduct.id ORDER BY StoreProduct.id ASC';
+        $sp = $db->createCommand($sql)->queryAll();
+        foreach ($sp as $product) {
+            $export[$product['game_id']]['storeProducts'][] = [
+                'name' => $product['name'],
+                'gameProduct' => $product['gpName'],
+                'storeId' => $product['store_id'],
+                'title' => $product['title'],
+                'description' => $product['description'],
+                'consumable' => $product['consumable'],
+                'price' => $product['price'],
+                'store' => $product['store'],
+            ];
+        }
+
+        file_put_contents(Yii::getAlias('@app/web/media/dump.json'), json_encode(array_values($export)));
     }
 
     /**
@@ -113,12 +182,8 @@ class GameController extends Controller
             'allModels' => $products
         ]);
 
-
-        $searchModel = new GameProduct();
-
         return $this->render('gameProduct/index', [
             'gameModel' => $gameModel,
-            'searchModel' => $searchModel,
             'dataProvider' => $dataProvider,
         ]);
     }
@@ -224,23 +289,90 @@ class GameController extends Controller
     public function actionStoreProducts($id)
     {
         $gameModel = $this->findModel($id);
+        $storeProducts = [];
+        foreach (Store::$available as $key => $store) {
+            $storeProducts[$key] = $gameModel->getStoreProducts($key);
+        }
 
-        $products = $gameModel->getProductsAll();
-        $dataProvider = new ArrayDataProvider([
-            'allModels' => $products
-        ]);
-
-        $searchModel = new GameProduct();
-
-        $stores = Store::$available;
-        var_dump($stores); die();
-
-
-        return $this->render('gameProduct/index', [
+        return $this->render('storeProduct/index', [
             'gameModel' => $gameModel,
-            'searchModel' => $searchModel,
-            'dataProvider' => $dataProvider,
+            'storeProducts' => $storeProducts
         ]);
+    }
+
+    /**
+     * Creates a new Store Product.
+     * @param \MongoId|string $_id
+     * @return mixed
+     */
+    public function actionStoreProductAdd($id)
+    {
+        $gameModel = $this->findModel($id);
+        $spModel   = new StoreProduct();
+
+        if ($spModel->load(Yii::$app->request->post()) && $gameModel->saveStoreProduct($spModel)) {
+            return $this->redirect([
+                'store-products',
+                'id' => (string)$gameModel->_id
+            ]);
+        }
+
+        $gameProducts = ArrayHelper::map($gameModel->getProductsAll(), 'name', 'name');
+
+        return $this->render('storeProduct/create', [
+            'model'        => $spModel,
+            'gameModel'    => $gameModel,
+            'gameProducts' => $gameProducts,
+        ]);
+    }
+
+    /**
+     * Update Store Product.
+     * @param \MongoId|string $_id
+     * @param string $name - Name of Store Product
+     * @param string $store - Store of Store Product
+     * @return mixed
+     */
+    public function actionStoreProductUpdate($id, $name, $store)
+    {
+        $gameModel = $this->findModel($id);
+        $spModel = $gameModel->getStoreProductOne($name, $store);
+
+        if ($spModel->load(Yii::$app->request->post()) && $gameModel->saveStoreProduct($spModel, $name, $store)) {
+            return $this->redirect([
+                'store-products',
+                'id' => (string)$gameModel->_id
+            ]);
+        }
+
+        $gameProducts = ArrayHelper::map($gameModel->getProductsAll(), 'name', 'name');
+
+        return $this->render('storeProduct/update', [
+            'model'        => $spModel,
+            'gameModel'    => $gameModel,
+            'gameProducts' => $gameProducts,
+        ]);
+    }
+
+    /**
+     * Delete Store Product.
+     * @param \MongoId|string $_id
+     * @param string $name - Name of Store Product
+     * @param string $store - Store of Store Product
+     * @return mixed
+     */
+    public function actionStoreProductDelete($id, $name, $store)
+    {
+        $gameModel = $this->findModel($id);
+        $gpModel = $gameModel->getStoreProductOne($name, $store);
+
+        $gameModel->deleteStoreProduct($gpModel);
+
+        return $this->redirect([
+            'store-products',
+            'id' => (string)$gameModel->_id
+        ]);
+
     }
 
     /**

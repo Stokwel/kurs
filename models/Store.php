@@ -1,12 +1,14 @@
 <?php
 
+namespace app\models;
+
 class Store
 {
     const   STORE_APPLE = 'AppleStore',
             STORE_AMAZON = 'Amazon',
             STORE_TEST = 'Test',
             STORE_GOOGLE = 'GooglePlay',
-            STORE_WP = 'WP';
+            STORE_WP = 'WindowsStore';
 
     public static $available = [
         self::STORE_APPLE => 'Apple Store',

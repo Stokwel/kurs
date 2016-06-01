@@ -9,7 +9,7 @@ use yii\web\UploadedFile;
 
 /**
  * @property mixed      $name
- * @property mixed      $gameProduct
+ * @property mixed      $description
  * @property mixed    $isPackage
  * @property mixed      $image
  * @property mixed      $data

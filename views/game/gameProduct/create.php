@@ -9,7 +9,7 @@ use \yii\helpers\Url;
 /* @var $gameModel app\models\Game */
 
 $this->title = 'Create Game Product';
-$this->params['breadcrumbs'][] = ['label' => 'Game Product', 'url' => Url::to(['products', 'id' => (string)$gameModel->_id])];
+$this->params['breadcrumbs'][] = ['label' => 'Game product', 'url' => Url::to(['products', 'id' => (string)$gameModel->_id])];
 $this->params['breadcrumbs'][] = $gameModel->name;
 $this->registerJsFile('@web/js/game/product-form.js', ['depends' => ['yii\web\YiiAsset']]);
 ?>

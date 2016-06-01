@@ -12,12 +12,13 @@ use Yii;
  * @property \MongoId|string $_id
  * @property mixed $name
  * @property mixed $title
- * @property mixed $stores
+ * @property mixed $storeProducts
  * @property mixed $products
  */
 class Game extends \yii\mongodb\ActiveRecord
 {
-    private $_productNameIndex = [];
+    protected $productsHash = [];
+    protected $storeProductsHash = [];
 
     /**
      * @inheritdoc
@@ -36,7 +37,7 @@ class Game extends \yii\mongodb\ActiveRecord
             '_id',
             'name',
             'title',
-            'stores',
+            'storeProducts',
             'products',
         ];
     }
@@ -49,10 +50,27 @@ class Game extends \yii\mongodb\ActiveRecord
         return [
             [['name','title'], 'required'],
             [['name', 'title'], 'string', 'length' => [0, 255]],
-            [['stores', 'products'], 'safe'],
-            [['stores', 'products'], 'default', 'value' => []],
+            [['storeProducts', 'products'], 'safe'],
+            [['storeProducts', 'products'], 'default', 'value' => []],
             [['_id', 'name', 'title'], 'safe', 'on' => 'search']
         ];
+    }
+
+    public static function findOne($condition)
+    {
+        /** @var  $model Game */
+        $model = parent::findOne($condition);
+
+        if ($model) {
+            foreach ($model->products as $product) {
+                $model->productsHash[ $product['name'] ] = $product;
+            }
+            foreach ($model->storeProducts as $product) {
+                $model->storeProductsHash[$product['name'].'_'.$product['store']] = $product;
+            }
+        }
+
+        return $model;
     }
 
     /**
@@ -64,7 +82,7 @@ class Game extends \yii\mongodb\ActiveRecord
             '_id' => 'ID',
             'name' => 'Name',
             'title' => 'Title',
-            'stores' => 'Stores',
+            'storeProducts' => 'Store products',
             'products' => 'Products',
         ];
     }
@@ -77,24 +95,6 @@ class Game extends \yii\mongodb\ActiveRecord
         }
 
         return true;
-    }
-
-    /**
-     * @param bool $force
-     * @return array
-     */
-    private function _getProductNameIndex($force = false)
-    {
-        if (!$this->_productNameIndex || $force) {
-            $this->_productNameIndex = [];
-            $key = 0; // Отдельный кей СПЕЦИАЛЬНО!
-            foreach ($this->products as $product) {
-                $this->_productNameIndex[$product['name']] = $key;
-                $key++;
-            }
-        }
-
-        return $this->_productNameIndex;
     }
 
     /**
@@ -127,7 +127,7 @@ class Game extends \yii\mongodb\ActiveRecord
      */
     public function insertGameProduct(GameProduct $gpModel)
     {
-        if ($this->isExistProduct($gpModel->name)) {
+        if (isset($this->productsHash[$gpModel->name])) {
             $gpModel->addError('name', 'Такой продукт уже существует!');
 
             return false;
@@ -142,9 +142,8 @@ class Game extends \yii\mongodb\ActiveRecord
         ]);
 
         if ($result) {
-            $products = $this->products;
-            $products[] = $gpModel->toArray();
-            $this->setAttributes(['products' => $products]);
+            $this->productsHash[$gpModel->name] = $gpModel->toArray();
+            $this->setAttributes(['products' => array_values($this->productsHash)]);
         }
 
         return $result;
@@ -162,14 +161,14 @@ class Game extends \yii\mongodb\ActiveRecord
 
         if ($gpModel->name !== $name) {
             $nameForUpdate = $name;
-            if ($this->isExistProduct($gpModel->name)) {
+            if (isset($this->productsHash[$gpModel->name])) {
                 $gpModel->addError('name', 'Такой продукт уже существует!');
 
                 return false;
             }
         }
 
-        if (!$this->isExistProduct($name)) {
+        if (!isset($this->productsHash[$nameForUpdate])) {
             $gpModel->addError('name', 'Такого продукта не существует!');
 
             return false;
@@ -185,11 +184,9 @@ class Game extends \yii\mongodb\ActiveRecord
         ]);
 
         if ($result) {
-            $products = $this->products;
-            $productNameIndex = $this->_getProductNameIndex();
-            $products[$productNameIndex[$nameForUpdate]] = $gpModel->toArray();
-            $this->setAttributes(['products' => $products]);
-            $this->_getProductNameIndex(true);
+            unset($this->productsHash[$name]);
+            $this->productsHash[$nameForUpdate] = $gpModel->toArray();
+            $this->setAttributes(['products' => array_values($this->productsHash)]);
         }
     
         return $result;
@@ -202,7 +199,7 @@ class Game extends \yii\mongodb\ActiveRecord
      */
     public function deleteGameProduct(GameProduct $gpModel)
     {
-        if (!$this->isExistProduct($gpModel->name)) {
+        if (!isset($this->productsHash[$gpModel->name])) {
 
             return false;
         }
@@ -219,11 +216,8 @@ class Game extends \yii\mongodb\ActiveRecord
 
         if ($result) {
             $gpModel->deleteImage();
-            $products = $this->products;
-            $productNameIndex = $this->_getProductNameIndex();
-            unset($products[$productNameIndex[$gpModel->name]]);
-            $this->setAttributes(['products' => $products]);
-            $this->_getProductNameIndex(true);
+            unset($this->productsHash[$gpModel->name]);
+            $this->setAttributes(['products' => array_values($this->productsHash)]);
         }
 
         return $result;
@@ -237,14 +231,12 @@ class Game extends \yii\mongodb\ActiveRecord
      */
     public function getProductOne($name, $loadPackageModel = false)
     {
-        if (!$this->products || !$this->isExistProduct($name)) {
+        if (!$this->products || !isset($this->productsHash[$name])) {
             return null;
         }
 
-        $productNameIndex = $this->_getProductNameIndex();
-
         $gpModel = new GameProduct();
-        $gpModel->setAttributes($this->products[$productNameIndex[$name]], false);
+        $gpModel->setAttributes($this->productsHash[$name], false);
         $gpModel->package = $this->getPackageProducts($gpModel, $loadPackageModel);
 
         return $gpModel;
@@ -256,12 +248,12 @@ class Game extends \yii\mongodb\ActiveRecord
      */
     public function getProductsAll($loadPackageModel = false)
     {
-        if (!$this->products) {
+        if (!$this->productsHash) {
             return [];
         }
 
         $products = [];
-        foreach ($this->products as $product) {
+        foreach ($this->productsHash as $product) {
             $gpModel = new GameProduct();
             $gpModel->setAttributes($product, false);
             $gpModel->package = $this->getPackageProducts($gpModel, $loadPackageModel);
@@ -270,6 +262,15 @@ class Game extends \yii\mongodb\ActiveRecord
         }
 
         return $products;
+    }
+
+
+    /**
+     * @return integer
+     */
+    public function getProductsCount()
+    {
+        return count($this->products);
     }
 
     /**
@@ -299,33 +300,188 @@ class Game extends \yii\mongodb\ActiveRecord
         return $packageProducts;
     }
 
-
-    public function isExistProduct($name)
+    /**
+     * Save Store Product to Mongo
+     * @param $spModel StoreProduct
+     * @param string $name - Name of Store Product
+     * @param string $store - Store of Store Product
+     * @return boolean
+     */
+    public function saveStoreProduct(StoreProduct $spModel, $name = null, $store = null)
     {
-        $productNameIndex = $this->_getProductNameIndex();
+        if (!$spModel->validate()) {
+            return false;
+        }
 
-        return isset($productNameIndex[$name]);
+        if ($name) {
+            return $this->updateStoreProduct($spModel, $name, $store);
+        } else {
+            return $this->insertStoreProduct($spModel);
+        }
     }
 
     /**
-     * @param bool $loadPackageModel
-     * @return GameProduct[]
+     * Insert New Store Product to Mongo
+     * @param $spModel StoreProduct
+     * @return boolean
      */
-    public function getStoreProductsAll()
+    public function insertStoreProduct(StoreProduct $spModel)
     {
-        if (!$this->products) {
+        if (isset($this->storeProductsHash[$spModel->name.'_'.$spModel->store])) {
+            $spModel->addError('name', 'Такой продукт уже существует!');
+
+            return false;
+        }
+
+        $result = $this->updateAll([
+            '$push' => [
+                'storeProducts' => $spModel->toArray()
+            ],
+        ], [
+            '_id' => (string)$this->_id,
+        ]);
+
+        if ($result) {
+            $this->storeProductsHash[$spModel->name.'_'.$spModel->store] = $spModel->toArray();
+            $this->setAttributes(['storeProducts' => array_values($this->storeProductsHash)]);
+        }
+
+        return $result;
+    }
+
+    /**
+     * Update Store Product to Mongo
+     * @param $spModel StoreProduct
+     * @param string $name - Name of Store Product
+     * @param string $store - Store of Store Product
+     * @return boolean
+     */
+    public function updateStoreProduct(StoreProduct $spModel, $name, $store)
+    {
+        $nameForUpdate = $spModel->name;
+        $storeForUpdate = $spModel->store;
+
+        if ($spModel->name !== $name || $spModel->store !== $store) {
+            $nameForUpdate = $name;
+            $storeForUpdate = $store;
+            if (isset($this->storeProductsHash[$spModel->name.'_'.$spModel->store])) {
+                $spModel->addError('name', 'Такой продукт уже существует!');
+
+                return false;
+            }
+        }
+
+        if (!isset($this->storeProductsHash[$nameForUpdate.'_'.$storeForUpdate])) {
+            $spModel->addError('name', 'Такого продукта не существует!');
+
+            return false;
+        }
+
+
+        $result = $this->updateAll([
+            '$set' => [
+                'storeProducts.$' => $spModel->toArray()
+            ],
+        ], [
+            '_id' => (string)$this->_id,
+            'storeProducts.name' => $nameForUpdate
+        ]);
+
+        if ($result) {
+            unset($this->storeProductsHash[$name.'_'.$store]);
+            $this->storeProductsHash[$nameForUpdate.'_'.$storeForUpdate] = $spModel->toArray();
+            $this->setAttributes(['storeProducts' => array_values($this->storeProductsHash)]);
+        }
+
+        return $result;
+    }
+
+    /**
+     * Delete Store Product from Mongo
+     * @param $spModel StoreProduct
+     * @return boolean
+     */
+    public function deleteStoreProduct(StoreProduct $spModel)
+    {
+        if (!isset($this->storeProductsHash[$spModel->name.'_'.$spModel->store])) {
+
+            return false;
+        }
+
+        $result = $this->updateAll([
+            '$pull' => [
+                'storeProducts' => [
+                    'name' => $spModel->name
+                ]
+            ],
+        ], [
+            '_id' => (string)$this->_id,
+        ]);
+
+        if ($result) {
+            unset($this->storeProductsHash[$spModel->name.'_'.$spModel->store]);
+            $this->setAttributes(['storeProducts' => array_values($this->storeProductsHash)]);
+        }
+
+        return $result;
+    }
+
+    /**
+     * @param string $store - Name of Store
+     * @param string $name - Name of Store Product
+     * @param string $store - Store of Store Product
+     * @param bool $loadGameProductModel
+     * @return StoreProduct
+     */
+    public function getStoreProductOne($name, $store, $loadGameProductModel = false)
+    {
+        if (!isset($this->storeProductsHash[$name.'_'.$store])) {
+            return null;
+        }
+
+        $product = $this->storeProductsHash[$name.'_'.$store];
+        if ($loadGameProductModel) {
+            $product['gameProduct'] = $this->getProductOne($product['gameProduct']);
+        }
+        $spModel = new StoreProduct();
+        $spModel->setAttributes($product, false);
+
+        return $spModel;
+    }
+
+    /**
+     * @param string $store - Name of Store
+     * @param bool $loadGameProductModel
+     * @return StoreProduct[]
+     */
+    public function getStoreProducts($store = null, $loadGameProductModel = false)
+    {
+        if (!$this->storeProductsHash) {
             return [];
         }
 
         $products = [];
-        foreach ($this->products as $product) {
-            $gpModel = new GameProduct();
-            $gpModel->setAttributes($product, false);
-            $gpModel->package = $this->getPackageProducts($gpModel, $loadPackageModel);
+        foreach ($this->storeProductsHash as $product) {
+            if (!$store || $store == $product['store']) {
+                if ($loadGameProductModel) {
+                    $product['gameProduct'] = $this->getProductOne($product['gameProduct']);
+                }
 
-            $products[] = $gpModel;
+                $spModel = new StoreProduct();
+                $spModel->setAttributes($product, false);
+
+                $products[] = $spModel;
+            }
         }
 
         return $products;
+    }
+
+    /**
+     * @return integer
+     */
+    public function getStoreProductsCount()
+    {
+        return count($this->storeProducts);
     }
 }
