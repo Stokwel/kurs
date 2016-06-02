@@ -2,16 +2,17 @@
 
 namespace app\controllers;
 
-use app\models\GameProduct;
+use Yii;
+
 use app\models\Game;
 use app\models\GameSearch;
-use app\models\StoreProduct;
-use Yii;
+use app\models\GameProduct;
 use app\models\Store;
+use app\models\StoreProduct;
+
+use yii\filters\AccessControl;
 use yii\data\ArrayDataProvider;
 use yii\db\Connection;
-use yii\db\Query;
-use yii\helpers\Url;
 use yii\web\Controller;
 use yii\web\NotFoundHttpException;
 use yii\filters\VerbFilter;
@@ -34,6 +35,15 @@ class GameController extends Controller
                     'delete' => ['POST'],
                 ],
             ],
+            'access' => [
+                'class' => AccessControl::className(),
+                'rules' => [
+                    [
+                        'allow' => true,
+                        'roles' => ['@'],
+                    ],
+                ],
+            ]
         ];
     }
 
