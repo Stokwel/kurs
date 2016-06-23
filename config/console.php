@@ -10,7 +10,17 @@ $config = [
     'basePath' => dirname(__DIR__),
     'bootstrap' => ['log'],
     'controllerNamespace' => 'app\commands',
+    'controllerMap'       => [
+        'migrate' => [
+            'class' => 'yii\mongodb\console\controllers\MigrateController',
+            'db'    => 'mongodb',
+        ],
+    ],
     'components' => [
+        'mongodb' => [
+            'class' => '\yii\mongodb\Connection',
+            'dsn' => 'mongodb://localhost:27017/test2',
+        ],
         'cache' => [
             'class' => 'yii\caching\FileCache',
         ],
@@ -25,13 +35,6 @@ $config = [
         'db' => $db,
     ],
     'params' => $params,
-    /*
-    'controllerMap' => [
-        'fixture' => [ // Fixture generation command line.
-            'class' => 'yii\faker\FixtureController',
-        ],
-    ],
-    */
 ];
 
 if (YII_ENV_DEV) {

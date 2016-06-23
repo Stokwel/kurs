@@ -25,7 +25,7 @@ class Game extends \yii\mongodb\ActiveRecord
      */
     public static function collectionName()
     {
-        return ['test', 'game'];
+        return 'game';
     }
 
     /**

@@ -19,7 +19,7 @@ class User extends \yii\mongodb\ActiveRecord implements \yii\web\IdentityInterfa
      */
     public static function collectionName()
     {
-        return ['test', 'user'];
+        return 'user';
     }
 
     /**
