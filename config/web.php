@@ -1,15 +1,12 @@
 <?php
 
 $params = require(__DIR__ . '/params.php');
+$base   = require(__DIR__ . '/base.php');
 
 $config = [
-    'id' => 'basic',
-    'basePath' => dirname(__DIR__),
-    'bootstrap' => ['log'],
     'defaultRoute' => 'game',
     'components' => [
         'request' => [
-            // !!! insert a secret key in the following (if it is empty) - this is required by cookie validation
             'cookieValidationKey' => 'xp7bWdSyA3NgoQ82hIjCEvPzLSEeMLJg',
         ],
         'cache' => [
@@ -22,33 +19,10 @@ $config = [
         'errorHandler' => [
             'errorAction' => 'site/error',
         ],
-        'mailer' => [
-            'class' => 'yii\swiftmailer\Mailer',
-            // send all mails to a file by default. You have to set
-            // 'useFileTransport' to false and configure a transport
-            // for the mailer to send real emails.
-            'useFileTransport' => true,
-        ],
-        'log' => [
-            'traceLevel' => YII_DEBUG ? 3 : 0,
-            'targets' => [
-                [
-                    'class' => 'yii\log\FileTarget',
-                    'levels' => ['error', 'warning'],
-                ],
-            ],
-        ],
-        'mongodb' => [
-            'class' => '\yii\mongodb\Connection',
-            'dsn' => 'mongodb://localhost:27017/test',
-        ],
-        'db' => require(__DIR__ . '/db.php'),
-
         'urlManager' => [
             'enablePrettyUrl' => true,
             'showScriptName' => false,
             'rules' => [
-                //'<controller:\w+>/<action:\w+>'=>'<controller>/<action>'
             ],
         ],
     ],
@@ -77,5 +51,14 @@ if (YII_ENV_DEV) {
         ]
     ];
 }
+
+$config = yii\helpers\ArrayHelper::merge($base, $config,
+    (APPLICATION_ENV && file_exists(__DIR__ . '/environments/' . APPLICATION_ENV . '/web.php')
+        ? require(__DIR__ . '/environments/' . APPLICATION_ENV . '/web.php')
+        : []), (file_exists(__DIR__ . '/local/web.php')
+        ? require(__DIR__ . '/local/web.php')
+        : []));
+
+unset($base);
 
 return $config;
