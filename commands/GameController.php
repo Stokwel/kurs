@@ -69,7 +69,7 @@ class GameController extends Controller
             file_put_contents(Yii::getAlias('@app/web/media/dump.json'), json_encode(array_values($export)));
 
             echo 'Создан файл экспорта: ' . Yii::getAlias('@app/web/media/dump.json') . PHP_EOL;
-            echo 'Команда для импорта: mongoimport --db ubs --collection game ' . Yii::getAlias('@app/web/media/dump.json') . ' --jsonArray' . PHP_EOL;
+            echo 'Команда для импорта: mongoimport --db {db} --collection game ' . Yii::getAlias('@app/web/media/dump.json') . ' --jsonArray' . PHP_EOL;
 
             return self::EXIT_CODE_NORMAL;
         } catch (\Exception $e) {

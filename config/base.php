@@ -22,7 +22,7 @@ $config = [
         ],
         'mongodb' => [
             'class' => '\yii\mongodb\Connection',
-            'dsn'   => 'mongodb://localhost:27017/ubs'
+            'dsn'   => 'mongodb://ubs_local:123@localhost:27017/ubs_local'
         ],
         'dbForDump' => [
             'class' => 'yii\db\Connection',
