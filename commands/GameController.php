@@ -9,7 +9,7 @@ class GameController extends Controller
 {
     public function actionExport()
     {
-        $db = Yii::$app->db;
+        $db = Yii::$app->dbForDump;
 
         $sql = 'SELECT * FROM Game ORDER BY id ASC';
         $games = $db->createCommand($sql)->queryAll();
