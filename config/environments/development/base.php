@@ -9,8 +9,8 @@ return [
         'dbForDump' => [
             'class' => 'yii\db\Connection',
             'dsn' => 'mysql:host=localhost;dbname=ubs',
-            'username' => 'root',
-            'password' => 'gw4t3sns',
+            'username' => 'ubs',
+            'password' => 'biuyeejethiher',
             'charset' => 'utf8',
         ]
     ]
