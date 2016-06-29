@@ -4,18 +4,12 @@ namespace app\commands;
 
 use Yii;
 use yii\console\Controller;
-use yii\db\Connection;
 
 class GameController extends Controller
 {
     public function actionExport()
     {
-        $db = new Connection([
-            'dsn' => 'mysql:host=localhost;dbname=ubs',
-            'username' => 'root',
-            'password' => 'gw4t3sns',
-            'charset' => 'utf8',
-        ]);
+        $db = Yii::$app->db;
 
         $sql = 'SELECT * FROM Game ORDER BY id ASC';
         $games = $db->createCommand($sql)->queryAll();
