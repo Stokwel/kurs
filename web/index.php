@@ -3,7 +3,7 @@
 if ($appEnv = getenv('APPLICATION_ENV')) {
     define('APPLICATION_ENV', $appEnv);
 } else {
-    define('APPLICATION_ENV', 'localhost');
+    define('APPLICATION_ENV', 'local');
     defined('YII_DEBUG') or define('YII_DEBUG', true);
     defined('YII_ENV') or define('YII_ENV', 'dev');
 }
