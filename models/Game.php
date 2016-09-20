@@ -384,7 +384,12 @@ class Game extends \yii\mongodb\ActiveRecord
             ],
         ], [
             '_id' => (string)$this->_id,
-            'storeProducts.name' => $nameForUpdate
+            'storeProducts' => [
+                '$elemMatch' => [
+                    'name' => $nameForUpdate,
+                    'store' => $storeForUpdate
+                ]
+            ]
         ]);
 
         if ($result) {
@@ -411,7 +416,8 @@ class Game extends \yii\mongodb\ActiveRecord
         $result = $this->updateAll([
             '$pull' => [
                 'storeProducts' => [
-                    'name' => $spModel->name
+                    'name' => $spModel->name,
+                    'store' => $spModel->store
                 ]
             ],
         ], [
