@@ -1,29 +1,3 @@
-
-var xxx =
-{
-    "_id": ObjectId("574465cee50ce94a038b4567"),
-    "name":"com.nevosoft.cityrun",
-    "title":"City Cat",
-    "stores" : [
-        {
-            "name": "AppleStore",
-            "products": [
-                {
-                    "name": "sdfds",
-                    "gameProduct": "diamonds_150_AppleStore_import_1379598496",
-                    "storeId": "sdfsdfdsfsd",
-                    "title": "sdf",
-                    "description": "sdf33333333333333333",
-                    "consumable": "0",
-                    "price": "sdf"
-                }
-            ]
-        }
-    ],
-    "products": []
-}
-
-
 $(function () {
     $('#isPackage').on('change', function (event) {
         var $owner = $(this),
