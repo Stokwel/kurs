@@ -48,6 +48,7 @@ class Game extends \yii\mongodb\ActiveRecord
     public function rules()
     {
         return [
+            ['name', 'unique'],
             [['name','title'], 'required'],
             [['name', 'title'], 'string', 'length' => [0, 255]],
             [['storeProducts', 'products'], 'safe'],
