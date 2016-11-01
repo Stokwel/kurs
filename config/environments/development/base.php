@@ -4,7 +4,7 @@ return [
     'components' => [
         'mongodb' => [
             'class' => '\yii\mongodb\Connection',
-            'dsn'   => 'mongodb://ubs_dev:MmjL3dvy0N@dev3-mongo3.co.nevosoft.ru:27057/ubs_dev'
+            'dsn'   => 'mongodb://ubs_dev:MmjL3dvy0N@dev3-mongo.co.nevosoft.ru:27057/ubs_dev'
         ],
         'dbForDump' => [
             'class' => 'yii\db\Connection',
