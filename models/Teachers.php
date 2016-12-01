@@ -45,4 +45,9 @@ class Teachers extends \yii\db\ActiveRecord
             'third_name' => 'Third Name',
         ];
     }
+
+    public function getOlympics()
+    {
+        return $this->hasMany(Olympics::className(), ['teacher_id' => 'id']);
+    }
 }

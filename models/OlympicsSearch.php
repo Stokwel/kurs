@@ -18,7 +18,7 @@ class OlympicsSearch extends Olympics
     public function rules()
     {
         return [
-            [['id', 'from_ts', 'to_ts'], 'integer'],
+            [['id', 'from_ts', 'to_ts', 'teacher_id'], 'integer'],
             [['title', 'desctiption'], 'safe'],
         ];
     }
@@ -62,6 +62,7 @@ class OlympicsSearch extends Olympics
             'id' => $this->id,
             'from_ts' => $this->from_ts,
             'to_ts' => $this->to_ts,
+            'teacher_id' => $this->teacher_id,
         ]);
 
         $query->andFilterWhere(['like', 'title', $this->title])

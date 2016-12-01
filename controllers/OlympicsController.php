@@ -2,6 +2,7 @@
 
 namespace app\controllers;
 
+use app\models\Teachers;
 use Yii;
 use app\models\Olympics;
 use app\models\OlympicsSearch;

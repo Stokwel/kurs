@@ -33,6 +33,7 @@ $this->params['breadcrumbs'][] = $this->title;
             'desctiption:ntext',
             'from_ts',
             'to_ts',
+            'teacher_id',
         ],
     ]) ?>
 

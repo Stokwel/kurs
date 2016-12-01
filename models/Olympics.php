@@ -12,6 +12,7 @@ use Yii;
  * @property string $desctiption
  * @property integer $from_ts
  * @property integer $to_ts
+ * @property integer $teacher_id
  */
 class Olympics extends \yii\db\ActiveRecord
 {
@@ -29,9 +30,9 @@ class Olympics extends \yii\db\ActiveRecord
     public function rules()
     {
         return [
-            [['title', 'desctiption', 'from_ts', 'to_ts'], 'required'],
+            [['title', 'desctiption', 'from_ts', 'to_ts', 'teacher_id'], 'required'],
             [['title', 'desctiption'], 'string'],
-            [['from_ts', 'to_ts'], 'integer'],
+            [['from_ts', 'to_ts', 'teacher_id'], 'integer'],
         ];
     }
 
@@ -46,6 +47,12 @@ class Olympics extends \yii\db\ActiveRecord
             'desctiption' => 'Desctiption',
             'from_ts' => 'From Ts',
             'to_ts' => 'To Ts',
+            'teacher_id' => 'Teacher ID',
         ];
+    }
+
+    public function getTeacher()
+    {
+        return $this->hasOne(Teachers::className(), ['id' => 'teacher_id']);
     }
 }
