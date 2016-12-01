@@ -11,13 +11,13 @@ if ($appEnv = getenv('APPLICATION_ENV')) {
 require(__DIR__ . '/../vendor/autoload.php');
 require(__DIR__ . '/../vendor/yiisoft/yii2/Yii.php');
 
-if (APPLICATION_ENV == 'test') {
+$configCache = __DIR__ . '/../runtime/config.php';
+if (APPLICATION_ENV != 'production' || !file_exists($configCache)) {
     $config = require(__DIR__ . '/../config/web.php');
-} else {
-    $configCache = __DIR__ . '/../runtime/config.php';
-    if (!file_exists($configCache)) {
-        file_put_contents($configCache, serialize(require(__DIR__ . '/../config/web.php')));
-    }
+
+    file_put_contents($configCache, serialize($config));
+}
+else {
     $config = unserialize(file_get_contents($configCache));
 }
 

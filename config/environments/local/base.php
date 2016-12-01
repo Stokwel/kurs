@@ -2,9 +2,11 @@
 
 return [
     'components' => [
-        'mongodb' => [
-            'class' => '\yii\mongodb\Connection',
-            'dsn'   => 'mongodb://localhost:27017/ubs_local'
+        'db' => [
+            'class' => 'yii\db\Connection',
+            'dsn' => 'mysql:host=localhost;dbname=lab',
+            'username' => 'root',
+            'password' => 'gw4t3sns',
         ],
         'dbForDump' => [
             'class' => 'yii\db\Connection',
