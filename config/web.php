@@ -4,7 +4,6 @@ $params = require(__DIR__ . '/params.php');
 $base   = require(__DIR__ . '/base.php');
 
 $config = [
-    'defaultRoute' => 'game',
     'components' => [
         'request' => [
             'cookieValidationKey' => 'xp7bWdSyA3NgoQ82hIjCEvPzLSEeMLJg',
@@ -20,8 +19,8 @@ $config = [
             'errorAction' => 'site/error',
         ],
         'urlManager' => [
-            /*'enablePrettyUrl' => true,
-            'showScriptName' => false,*/
+            'enablePrettyUrl' => true,
+            'showScriptName' => false,
             'rules' => [
             ],
         ],
