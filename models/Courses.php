@@ -11,6 +11,7 @@ use Yii;
  * @property string $title
  * @property string $description
  * @property integer $price
+ * @property integer $teacher_id
  */
 class Courses extends \yii\db\ActiveRecord
 {
@@ -28,9 +29,9 @@ class Courses extends \yii\db\ActiveRecord
     public function rules()
     {
         return [
-            [['title', 'description', 'price'], 'required'],
+            [['title', 'description', 'price', 'teacher_id'], 'required'],
             [['title', 'description'], 'string'],
-            [['price'], 'integer'],
+            [['price', 'teacher_id'], 'integer'],
         ];
     }
 
@@ -44,6 +45,12 @@ class Courses extends \yii\db\ActiveRecord
             'title' => 'Title',
             'description' => 'Description',
             'price' => 'Price',
+            'teacher_id' => 'Teacher ID',
         ];
+    }
+
+    public function getTeacher()
+    {
+        return $this->hasOne(Teachers::className(), ['id' => 'teacher_id']);
     }
 }

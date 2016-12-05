@@ -32,7 +32,9 @@ class Olympics extends \yii\db\ActiveRecord
         return [
             [['title', 'desctiption', 'from_ts', 'to_ts', 'teacher_id'], 'required'],
             [['title', 'desctiption'], 'string'],
-            [['from_ts', 'to_ts', 'teacher_id'], 'integer'],
+            ['teacher_id', 'integer'],
+            ['from_ts', 'date', 'timestampAttribute' => 'from_ts', 'format' => 'dd-MM-yyyy'],
+            ['to_ts', 'date', 'timestampAttribute' => 'to_ts', 'format' => 'dd-MM-yyyy'],
         ];
     }
 

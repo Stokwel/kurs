@@ -18,7 +18,7 @@ class CoursesSearch extends Courses
     public function rules()
     {
         return [
-            [['id', 'price'], 'integer'],
+            [['id', 'price', 'teacher_id'], 'integer'],
             [['title', 'description'], 'safe'],
         ];
     }
@@ -61,6 +61,7 @@ class CoursesSearch extends Courses
         $query->andFilterWhere([
             'id' => $this->id,
             'price' => $this->price,
+            'teacher_id' => $this->teacher_id,
         ]);
 
         $query->andFilterWhere(['like', 'title', $this->title])

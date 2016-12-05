@@ -31,9 +31,13 @@ $this->params['breadcrumbs'][] = $this->title;
             'id',
             'title:ntext',
             'desctiption:ntext',
-            'from_ts',
-            'to_ts',
-            'teacher_id',
+            'from_ts:date',
+            'to_ts:date',
+            [
+                'attribute' => 'teacher_id',
+                'label' => 'Преподаватель',
+                'value' => $model->teacher->second_name.' '.$model->teacher->first_name
+            ],
         ],
     ]) ?>
 

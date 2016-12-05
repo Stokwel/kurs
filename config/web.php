@@ -4,6 +4,7 @@ $params = require(__DIR__ . '/params.php');
 $base   = require(__DIR__ . '/base.php');
 
 $config = [
+    'defaultRoute' => 'site/login',
     'components' => [
         'request' => [
             'cookieValidationKey' => 'xp7bWdSyA3NgoQ82hIjCEvPzLSEeMLJg',
@@ -12,6 +13,7 @@ $config = [
             'class' => 'yii\caching\FileCache',
         ],
         'user' => [
+            'class' => 'app\components\User',
             'identityClass' => 'app\models\User',
             'enableAutoLogin' => true,
         ],
@@ -19,8 +21,8 @@ $config = [
             'errorAction' => 'site/error',
         ],
         'urlManager' => [
-            /*'enablePrettyUrl' => true,
-            'showScriptName' => false,*/
+            'enablePrettyUrl' => true,
+            'showScriptName' => false,
             'rules' => [
             ],
         ],

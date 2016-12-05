@@ -28,6 +28,15 @@ $this->params['breadcrumbs'][] = $this->title;
             'title:ntext',
             'description:ntext',
             'price',
+            [
+                'attribute' => 'teacher_id',
+                'label' => 'Преподаватель',
+                'class' => 'yii\grid\DataColumn',
+                'value' => function ($data) {
+                    $teacher = $data->teacher;
+                    return $teacher->second_name.' '.$teacher->first_name;
+                },
+            ],
 
             ['class' => 'yii\grid\ActionColumn'],
         ],

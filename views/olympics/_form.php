@@ -18,9 +18,9 @@ use yii\jui\DatePicker;
 
     <?= $form->field($model, 'desctiption')->textarea(['rows' => 6]) ?>
 
-    <?= $form->field($model, 'from_ts')->widget(DatePicker::className()) ?>
+    <?= $form->field($model, 'from_ts')->widget(DatePicker::className(), ['dateFormat' => 'dd-MM-yyyy']) ?>
 
-    <?= $form->field($model, 'to_ts')->widget(DatePicker::className()) ?>
+    <?= $form->field($model, 'to_ts')->widget(DatePicker::className(), ['dateFormat' => 'dd-MM-yyyy']) ?>
 
     <?= $form->field($model, 'teacher_id')->dropDownList(Teachers::find()->select(['CONCAT([[first_name]]," ",[[second_name]])', 'id'])->indexBy('id')->column()) ?>
 

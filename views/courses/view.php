@@ -32,6 +32,11 @@ $this->params['breadcrumbs'][] = $this->title;
             'title:ntext',
             'description:ntext',
             'price',
+            [
+                'attribute' => 'teacher_id',
+                'label' => 'Преподаватель',
+                'value' => $model->teacher->second_name.' '.$model->teacher->first_name
+            ],
         ],
     ]) ?>
 

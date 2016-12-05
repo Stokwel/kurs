@@ -1,7 +1,7 @@
 <?php
 
 $config = [
-    'id' => 'ubs20-admin',
+    'id' => 'lab',
     'basePath' => dirname(__DIR__),
     'bootstrap' => ['log'],
     'components' => [
