@@ -6,8 +6,9 @@ use yii\helpers\Html;
 /* @var $this yii\web\View */
 /* @var $model app\models\Works */
 
-$this->title = 'Create Works';
-$this->params['breadcrumbs'][] = ['label' => 'Works', 'url' => ['index']];
+$this->title = 'Добавить публикацию';
+$this->params['breadcrumbs'][] = ['label' => 'Личный кабинет', 'url' => ['/authors/index']];
+$this->params['breadcrumbs'][] = ['label' => 'Мои публикации', 'url' => ['index']];
 $this->params['breadcrumbs'][] = $this->title;
 ?>
 <div class="works-create">

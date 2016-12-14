@@ -8,13 +8,16 @@ use yii\widgets\ListView;
 /* @var $searchModel app\models\CoursesSearch */
 /* @var $dataProvider yii\data\ActiveDataProvider */
 
-$this->title = 'Кабинет преподавателя';
+$this->title = 'Личный кабинет';
 
 ?>
 <div class="courses-index">
 
     <h1><?= Html::encode($this->title) ?></h1>
 
-    <p><?= Html::a('Оценить работы', Url::to('works')) ?></p>
+    <div class="menu">
+        <span><?= Html::a('Добавить публикацию', Url::to('/articles/create')) ?></span> |
+        <span><?= Html::a('Мои публикации', Url::to('/articles/index')) ?></span>
+    </div>
 
 </div>

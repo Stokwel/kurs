@@ -2,6 +2,7 @@
 
 use yii\helpers\Html;
 use yii\widgets\ActiveForm;
+use app\models\User;
 
 /* @var $this yii\web\View */
 /* @var $model app\models\Articles */
@@ -20,7 +21,7 @@ use yii\widgets\ActiveForm;
 
     <?= $form->field($model, 'description')->textarea(['rows' => 6]) ?>
 
-
+    <?= $form->field($model, 'collaborations')->dropDownList(User::getUsersList())?>
 
     <input type="hidden" name="Articles[user_id]" value="<?=$userId?>"/>
 

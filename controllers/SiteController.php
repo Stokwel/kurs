@@ -2,6 +2,7 @@
 
 namespace app\controllers;
 
+use app\models\ArticlesSearch;
 use app\models\Courses;
 use app\models\CoursesSearch;
 use app\models\News;
@@ -67,6 +68,18 @@ class SiteController extends Controller
         ]);
     }
 
+    public function actionArticles()
+    {
+        $searchModel = new ArticlesSearch();
+        $params = Yii::$app->request->queryParams;
+        $dataProvider = $searchModel->search($params);
+
+        return $this->render('articles', [
+            'searchModel' => $searchModel,
+            'dataProvider' => $dataProvider,
+        ]);
+    }
+
     public function actionNew($id)
     {
         return $this->render('new', [
@@ -83,13 +96,9 @@ class SiteController extends Controller
 
     public function actionLogin()
     {
-        if (!Yii::$app->user->isGuest) {
-            Yii::$app->response->redirect(Yii::$app->user->getHomeUrl());
-        }
-
         $model = new LoginForm();
         if ($model->load(Yii::$app->request->post()) && $model->login()) {
-            return $this->goBack();
+            return  Yii::$app->response->redirect(Yii::$app->user->getHomeUrl());
         }
 
         return $this->render('login', [

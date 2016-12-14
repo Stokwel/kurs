@@ -155,4 +155,9 @@ class User extends ActiveRecord implements IdentityInterface
 
         return $salt;
     }
+
+    public static function getUsersList()
+    {
+        return self::find()->select(['CONCAT([[second_name]]," ",[[first_name]])', 'id'])->indexBy('id')->where(['role' => 0])->column();
+    }
 }

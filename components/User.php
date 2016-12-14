@@ -14,7 +14,7 @@ class User extends \yii\web\User
     public function getHomeUrl()
     {
         $identity  = $this->getIdentity();
-        $url       = 'site/index';
+        $url       = 'authors/index';
         /*if ($teacherId == -1) {
             $url = 'admin/index';
         } elseif ($teacherId > 0) {

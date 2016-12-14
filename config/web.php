@@ -4,10 +4,11 @@ $params = require(__DIR__ . '/params.php');
 $base   = require(__DIR__ . '/base.php');
 
 $config = [
-    'defaultRoute' => 'site/login',
+    'defaultRoute' => 'site/index',
     'components' => [
         'request' => [
             'cookieValidationKey' => 'xp7bWdSyA3NgoQ82hIjCEvPzLSEeMLJg',
+            'baseUrl' => ''
         ],
         'cache' => [
             'class' => 'yii\caching\FileCache',
@@ -21,6 +22,7 @@ $config = [
             'errorAction' => 'site/error',
         ],
         'urlManager' => [
+            //'scriptUrl'=>'/index.php',
             'enablePrettyUrl' => true,
             'showScriptName' => false,
             'rules' => [
@@ -40,6 +42,13 @@ if (YII_ENV_DEV) {
                 'class' => 'yii\mongodb\gii\model\Generator'
             ]
         ]
+    ];
+
+    $config['bootstrap'][] = 'debug';
+    $config['modules']['debug'] = [
+        'class' => 'yii\debug\Module',
+        // uncomment the following to add your IP if you are not connecting from localhost.
+        //'allowedIPs' => ['127.0.0.1', '::1'],
     ];
 }
 

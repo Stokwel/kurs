@@ -3,12 +3,12 @@
 use yii\helpers\Html;
 
 /* @var $this yii\web\View */
-/* @var $model app\models\Works */
+/* @var $model app\models\Articles */
 
-$this->title = 'Update Works: ' . $model->title;
-$this->params['breadcrumbs'][] = ['label' => 'Works', 'url' => ['index']];
-$this->params['breadcrumbs'][] = ['label' => $model->title, 'url' => ['view', 'id' => $model->id]];
-$this->params['breadcrumbs'][] = 'Update';
+$this->title = 'Изменить публикацию: ' . $model->title;
+$this->params['breadcrumbs'][] = ['label' => 'Личный кабинет', 'url' => ['/authors/index']];
+$this->params['breadcrumbs'][] = ['label' => 'Мои публикации', 'url' => ['index']];
+$this->params['breadcrumbs'][] = 'Изменить';
 ?>
 <div class="works-update">
 

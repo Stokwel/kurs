@@ -9,7 +9,7 @@ use yii\filters\AccessControl;
 use yii\helpers\Url;
 use yii\web\Controller;
 
-class TeacherController extends Controller
+class AuthorsController extends Controller
 {
     public function actions()
     {
@@ -28,7 +28,7 @@ class TeacherController extends Controller
                 'rules' => [
                     [
                         'allow' => true,
-                        'roles' => ['teacher'],
+                        'roles' => ['author'],
                     ],
                 ],
             ],
@@ -46,7 +46,7 @@ class TeacherController extends Controller
         $params = Yii::$app->request->queryParams;
         $dataProvider = $searchModel->search($params);
 
-        return $this->render('works', [
+        return $this->render('articles', [
             'searchModel' => $searchModel,
             'dataProvider' => $dataProvider,
         ]);

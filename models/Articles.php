@@ -53,9 +53,28 @@ class Articles extends \yii\db\ActiveRecord
         ];
     }
 
-    public function getOlympic()
+    public function getUser()
     {
-        return $this->hasOne(Olympics::className(), ['id' => 'olympic_id']);
+        return $this->hasOne(User::className(), ['id' => 'user_id']);
+    }
+
+    public function getCollaborations()
+    {
+        return $this->hasMany(User::className(), ['id' => 'user_id'])
+            ->viaTable('collaboration', ['article_id' => 'id']);
+    }
+
+    public function afterSave($insert)
+    {
+        $collaboration = new Collaboration();
+        $collaboration->article_id = $this->id;
+        //var_dump(Yii::$app->request->post('Articles[collaborations]')); die();
+        $collaboration->user_id = Yii::$app->request->post('Articles')['collaborations'];
+
+        //$collaboration = User::findOne(Yii::$app->request->post('Articles[collaborations]'));
+        //$this->link('collaborations', $collaboration);
+
+        return $collaboration->save(true);
     }
 
     public function beforeSave($insert)

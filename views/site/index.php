@@ -8,17 +8,16 @@ use yii\widgets\ListView;
 /* @var $searchModel app\models\CoursesSearch */
 /* @var $dataProvider yii\data\ActiveDataProvider */
 
-$this->title = 'Личный кабинет';
+$this->title = 'Главная';
 
 ?>
 <div class="courses-index">
-
-    <h1><?= Html::encode($this->title) ?></h1>
-
     <div class="menu">
-        <span><?= Html::a('Новости', Url::to('news')) ?></span> |
-        <span><?= Html::a('Все Курсы', Url::to('courses')) ?></span> |
-        <span><?= Html::a('Мои публикации', Url::to('/articles/index')) ?></span>
+        <span><?= Html::a('Авторы', Url::to('news')) ?></span> |
+        <span><?= Html::a('Публикации', Url::to('site/articles')) ?></span>
+        <?php if (!Yii::$app->user->isGuest): ?>
+            | <span><?= Html::a('Личный кабинет', Url::to('/authors/index')) ?></span>
+        <?php endif; ?>
     </div>
 
 </div>
