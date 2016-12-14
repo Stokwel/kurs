@@ -28,7 +28,7 @@ AppAsset::register($this);
 <div class="wrap">
     <?php
     NavBar::begin([
-        'brandLabel' => 'Лаба',
+        'brandLabel' => 'Scientific cloud',
         'brandUrl' => Yii::$app->homeUrl,
         'options' => [
             'class' => 'navbar-inverse navbar-fixed-top',
@@ -38,17 +38,20 @@ AppAsset::register($this);
         'options' => ['class' => 'navbar-nav navbar-right'],
         'items' => [
             Yii::$app->user->isGuest ? (
-                ['label' => 'Login', 'url' => ['/site/login']]
+                ['label' => 'Вход', 'url' => ['/site/login']]
             ) : (
                 '<li>'
                 . Html::beginForm(['/site/logout'], 'post', ['class' => 'navbar-form'])
                 . Html::submitButton(
-                    'Logout (' . Yii::$app->user->identity->username . ')',
+                    'Выход (' . Yii::$app->user->identity->username . ')',
                     ['class' => 'btn btn-link']
                 )
                 . Html::endForm()
                 . '</li>'
-            )
+            ),
+            Yii::$app->user->isGuest ? (
+            ['label' => 'Регистрация', 'url' => ['/site/signup']]
+            ) : ''
         ],
     ]);
     NavBar::end();
@@ -56,7 +59,7 @@ AppAsset::register($this);
 
     <div class="container">
         <?= Breadcrumbs::widget([
-            'homeLink' => ['label' => 'Home', 'url' => Yii::$app->homeUrl],
+            'homeLink' => ['label' => 'Главная', 'url' => Yii::$app->homeUrl],
             'links' => isset($this->params['breadcrumbs']) ? $this->params['breadcrumbs'] : [],
         ]) ?>
         <?= $content ?>

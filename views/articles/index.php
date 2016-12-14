@@ -4,38 +4,36 @@ use yii\helpers\Html;
 use yii\grid\GridView;
 
 /* @var $this yii\web\View */
-/* @var $searchModel app\models\NewsSearch */
+/* @var $searchModel app\models\WorksSearch */
 /* @var $dataProvider yii\data\ActiveDataProvider */
 
-$this->title = 'News';
+$this->title = 'Мои публикации';
 $this->params['breadcrumbs'][] = $this->title;
 ?>
-<div class="news-index">
+<div class="works-index">
 
     <h1><?= Html::encode($this->title) ?></h1>
-    <?php // echo $this->render('_search', ['model' => $searchModel]); ?>
-
     <p>
-        <?= Html::a('Create News', ['create'], ['class' => 'btn btn-success']) ?>
+        <?= Html::a('Create Works', ['create'], ['class' => 'btn btn-success']) ?>
     </p>
     <?= GridView::widget([
         'dataProvider' => $dataProvider,
-        'filterModel' => $searchModel,
+        //'filterModel' => $searchModel,
         'columns' => [
             ['class' => 'yii\grid\SerialColumn'],
 
-            'id',
-            'created_at',
             'title:ntext',
+            'magazine_title:ntext',
+            'keywords:ntext',
             [
-                'attribute' => 'content',
+                'attribute' => 'description',
                 'class' => 'yii\grid\DataColumn',
                 'value' => function ($data) {
-                    return mb_strimwidth($data->content, 0, 200, '...');
+                    return mb_strimwidth($data->description, 0, 200, '...');
                 },
             ],
-
+            'created_at',
             ['class' => 'yii\grid\ActionColumn'],
-        ]
+        ],
     ]); ?>
 </div>

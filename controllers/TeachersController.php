@@ -2,6 +2,7 @@
 
 namespace app\controllers;
 
+use app\models\SignupForm;
 use Yii;
 use app\models\Teachers;
 use app\models\TeachersSearch;
@@ -64,12 +65,23 @@ class TeachersController extends Controller
     public function actionCreate()
     {
         $model = new Teachers();
+        $user = new SignupForm();
 
-        if ($model->load(Yii::$app->request->post()) && $model->save()) {
-            return $this->redirect(['view', 'id' => $model->id]);
+
+
+        $model->load(Yii::$app->request->post());
+        $user->load(Yii::$app->request->post());
+
+        if ($model->validate() && $user->validate()) {
+            if ($model->save()) {
+                $user->teacher_id = $model->id;
+                $user->signup();
+                return $this->redirect(['view', 'id' => $model->id]);
+            }
         } else {
             return $this->render('create', [
                 'model' => $model,
+                'user' => $user
             ]);
         }
     }

@@ -26,7 +26,13 @@ $this->params['breadcrumbs'][] = $this->title;
 
             'id',
             'title:ntext',
-            'description:ntext',
+            [
+                'attribute' => 'description',
+                'class' => 'yii\grid\DataColumn',
+                'value' => function ($data) {
+                    return mb_strimwidth($data->description, 0, 200, '...');
+                },
+            ],
             'price',
             [
                 'attribute' => 'teacher_id',

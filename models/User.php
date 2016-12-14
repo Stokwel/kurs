@@ -13,8 +13,13 @@ use yii\web\IdentityInterface;
  * @property string $username
  * @property string $password
  * @property string $salt
- * @property bool $is_employee
- * @property string $email
+ * @property string $first_name
+ * @property string $second_name
+ * @property string $third_name
+ * @property string $address_residence
+ * @property string $place_work
+ * @property integer $birth_date
+ * @property integer $role
  */
 class User extends ActiveRecord implements IdentityInterface
 {

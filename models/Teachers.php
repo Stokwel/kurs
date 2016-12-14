@@ -50,4 +50,9 @@ class Teachers extends \yii\db\ActiveRecord
     {
         return $this->hasMany(Olympics::className(), ['teacher_id' => 'id']);
     }
+
+    public function getUser()
+    {
+        return $this->hasOne(User::className(), ['teacher_id' => 'id']);
+    }
 }

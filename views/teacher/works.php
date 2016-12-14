@@ -4,20 +4,16 @@ use yii\helpers\Html;
 use yii\grid\GridView;
 
 /* @var $this yii\web\View */
-/* @var $searchModel app\models\OlympicsSearch */
+/* @var $searchModel app\models\WorksSearch */
 /* @var $dataProvider yii\data\ActiveDataProvider */
 
-$this->title = 'Olympics';
+$this->title = 'Works';
 $this->params['breadcrumbs'][] = $this->title;
 ?>
-<div class="olympics-index">
+<div class="works-index">
 
     <h1><?= Html::encode($this->title) ?></h1>
-    <?php // echo $this->render('_search', ['model' => $searchModel]); ?>
 
-    <p>
-        <?= Html::a('Create Olympics', ['create'], ['class' => 'btn btn-success']) ?>
-    </p>
     <?= GridView::widget([
         'dataProvider' => $dataProvider,
         'filterModel' => $searchModel,
@@ -27,25 +23,28 @@ $this->params['breadcrumbs'][] = $this->title;
             'id',
             'title:ntext',
             [
-                'attribute' => 'desctiption',
+                'attribute' => 'description',
                 'class' => 'yii\grid\DataColumn',
                 'value' => function ($data) {
-                    return mb_strimwidth($data->desctiption, 0, 200, '...');
+                    return mb_strimwidth($data->description, 0, 200, '...');
                 },
             ],
-            'from_ts:date',
-            'to_ts:date',
             [
-                'attribute' => 'teacher_id',
-                'label' => 'Преподаватель',
+                'attribute' => 'olympic_id',
+                'label' => 'Олимпиада',
                 'class' => 'yii\grid\DataColumn',
                 'value' => function ($data) {
-                    $teacher = $data->teacher;
-                    return $teacher->second_name.' '.$teacher->first_name;
+                    $olympic = $data->olympic;
+                    return $olympic->title;
                 },
             ],
-
-            ['class' => 'yii\grid\ActionColumn'],
+            [
+                'header' => 'Оценка',
+                'class' => 'yii\grid\Column',
+                'content' => function ($data) {
+                    return Html::a($data->rating, \yii\helpers\Url::to(['rating', 'id' => $data->id]));
+                },
+            ],
         ],
     ]); ?>
 </div>

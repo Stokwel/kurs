@@ -2,6 +2,10 @@
 
 namespace app\controllers;
 
+use app\models\Courses;
+use app\models\CoursesSearch;
+use app\models\News;
+use app\models\NewsSearch;
 use Yii;
 use yii\filters\AccessControl;
 use yii\web\Controller;
@@ -38,7 +42,43 @@ class SiteController extends Controller
 
     public function actionIndex()
     {
-        echo 'students';
+        return $this->render('index');
+    }
+
+    public function actionNews()
+    {
+        $searchModel = new NewsSearch();
+        $dataProvider = $searchModel->search(Yii::$app->request->queryParams);
+
+        return $this->render('news', [
+            'newsSearch' => $searchModel,
+            'newsData' => $dataProvider,
+        ]);
+    }
+
+    public function actionCourses()
+    {
+        $searchModel = new CoursesSearch();
+        $dataProvider = $searchModel->search(Yii::$app->request->queryParams);
+
+        return $this->render('courses', [
+            'searchModel' => $searchModel,
+            'dataProvider' => $dataProvider,
+        ]);
+    }
+
+    public function actionNew($id)
+    {
+        return $this->render('new', [
+            'model' => News::findOne(['id' => $id]),
+        ]);
+    }
+
+    public function actionCourse($id)
+    {
+        return $this->render('course', [
+            'model' => Courses::findOne(['id' => $id]),
+        ]);
     }
 
     public function actionLogin()

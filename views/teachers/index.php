@@ -28,6 +28,14 @@ $this->params['breadcrumbs'][] = $this->title;
             'first_name:ntext',
             'second_name:ntext',
             'third_name:ntext',
+            [
+                'header' => 'Логин',
+                'class' => 'yii\grid\Column',
+                'content' => function ($data) {
+                    $user = $data->user;
+                    return $user->username;
+                },
+            ],
 
             ['class' => 'yii\grid\ActionColumn'],
         ],

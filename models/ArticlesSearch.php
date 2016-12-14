@@ -3,14 +3,12 @@
 namespace app\models;
 
 use Yii;
-use yii\base\Model;
 use yii\data\ActiveDataProvider;
-use app\models\Works;
 
 /**
  * WorksSearch represents the model behind the search form about `app\models\Works`.
  */
-class WorksSearch extends Works
+class ArticlesSearch extends Articles
 {
     /**
      * @inheritdoc
@@ -18,8 +16,8 @@ class WorksSearch extends Works
     public function rules()
     {
         return [
-            [['id', 'olympic_id', 'user_id'], 'integer'],
-            [['title', 'description'], 'safe'],
+            [['id', 'user_id'], 'integer'],
+            [['title', 'description', 'magazine_title', 'keywords'], 'safe'],
         ];
     }
 
@@ -29,7 +27,7 @@ class WorksSearch extends Works
     public function scenarios()
     {
         // bypass scenarios() implementation in the parent class
-        return Model::scenarios();
+        return Articles::scenarios();
     }
 
     /**
@@ -41,7 +39,7 @@ class WorksSearch extends Works
      */
     public function search($params)
     {
-        $query = Works::find();
+        $query = Articles::find();
 
         // add conditions that should always apply here
 
@@ -60,12 +58,12 @@ class WorksSearch extends Works
         // grid filtering conditions
         $query->andFilterWhere([
             'id' => $this->id,
-            'olympic_id' => $this->olympic_id,
             'user_id' => $this->user_id
         ]);
 
         $query->andFilterWhere(['like', 'title', $this->title])
-            ->andFilterWhere(['like', 'description', $this->description]);
+            ->andFilterWhere(['like', 'description', $this->description])
+            ->andFilterWhere(['like', 'keywords', $this->keywords]);
 
         return $dataProvider;
     }

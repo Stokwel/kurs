@@ -3,7 +3,7 @@
 -- http://www.phpmyadmin.net
 --
 -- Host: localhost
--- Generation Time: Dec 05, 2016 at 08:36 PM
+-- Generation Time: Dec 14, 2016 at 07:49 PM
 -- Server version: 5.7.16-0ubuntu0.16.04.1
 -- PHP Version: 5.6.28-1+deb.sury.org~xenial+1
 
@@ -17,8 +17,32 @@ SET time_zone = "+00:00";
 /*!40101 SET NAMES utf8mb4 */;
 
 --
--- Database: `lab`
+-- Database: `kurs`
 --
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `articles`
+--
+
+CREATE TABLE `articles` (
+  `id` int(11) NOT NULL,
+  `title` tinytext NOT NULL,
+  `description` text NOT NULL,
+  `user_id` int(11) NOT NULL,
+  `created_at` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  `keywords` tinytext NOT NULL,
+  `magazine_title` tinytext NOT NULL
+) ENGINE=MyISAM DEFAULT CHARSET=utf8;
+
+--
+-- Dumping data for table `articles`
+--
+
+INSERT INTO `articles` (`id`, `title`, `description`, `user_id`, `created_at`, `keywords`, `magazine_title`) VALUES
+(2, 'Первая публикация', 'ыапва', 4, '2016-12-14 16:36:26', 'первая, впи, слово', 'Вестник ВПИ'),
+(3, 'fdsgfdg', 'dfgdfg', 4, '2016-12-14 16:46:05', 'dfgdfg', 'dgfdg');
 
 -- --------------------------------------------------------
 
@@ -113,34 +137,35 @@ CREATE TABLE `user` (
   `id` int(11) NOT NULL,
   `username` tinytext NOT NULL,
   `password` tinytext NOT NULL,
-  `teacher_id` tinyint(1) NOT NULL DEFAULT '0',
-  `salt` tinytext NOT NULL
+  `salt` tinytext NOT NULL,
+  `first_name` tinytext NOT NULL,
+  `second_name` tinytext NOT NULL,
+  `third_name` tinytext NOT NULL,
+  `address_residence` tinytext NOT NULL,
+  `place_work` tinytext NOT NULL,
+  `birth_date` int(11) NOT NULL,
+  `role` int(11) NOT NULL DEFAULT '0'
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8;
 
 --
 -- Dumping data for table `user`
 --
 
-INSERT INTO `user` (`id`, `username`, `password`, `teacher_id`, `salt`) VALUES
-(1, 'admin', '923ed0f2eeafcf069f5e67bc4f8d8b1e', -1, 'GfXiNaPKVW0hX7'),
-(2, 'student', '87d732f21c1498557c070e9804bd9611', 0, '$2y$13$p56268sm3FR08ZxvnSPHlU');
-
--- --------------------------------------------------------
-
---
--- Table structure for table `works`
---
-
-CREATE TABLE `works` (
-  `id` int(11) NOT NULL,
-  `title` tinytext NOT NULL,
-  `description` text NOT NULL,
-  `olympic_id` int(11) NOT NULL
-) ENGINE=MyISAM DEFAULT CHARSET=utf8;
+INSERT INTO `user` (`id`, `username`, `password`, `salt`, `first_name`, `second_name`, `third_name`, `address_residence`, `place_work`, `birth_date`, `role`) VALUES
+(1, 'admin', '923ed0f2eeafcf069f5e67bc4f8d8b1e', 'GfXiNaPKVW0hX7', '', '', '', '', '', 0, 0),
+(2, 'student', '87d732f21c1498557c070e9804bd9611', '$2y$13$p56268sm3FR08ZxvnSPHlU', '', '', '', '', '', 0, 0),
+(3, 'xxx', '8357c10d17d51c51558eb5e23c5fcf48', '$2y$13$w0veSBg8UdGtECKm055g/t', '', '', '', '', '', 0, 0),
+(4, 'yyy', 'c9170139ac66ee987de7e0a623018bb2', '$2y$13$KKV5KVp9YKO.oA39DOZSD7', 'sdfgfdg', 'dfgd', 'gdfgdfg', 'dfgdfg', 'dfgdf', 1482796800, 0);
 
 --
 -- Indexes for dumped tables
 --
+
+--
+-- Indexes for table `articles`
+--
+ALTER TABLE `articles`
+  ADD PRIMARY KEY (`id`);
 
 --
 -- Indexes for table `courses`
@@ -175,15 +200,14 @@ ALTER TABLE `user`
   ADD KEY `id` (`id`);
 
 --
--- Indexes for table `works`
---
-ALTER TABLE `works`
-  ADD PRIMARY KEY (`id`);
-
---
 -- AUTO_INCREMENT for dumped tables
 --
 
+--
+-- AUTO_INCREMENT for table `articles`
+--
+ALTER TABLE `articles`
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=4;
 --
 -- AUTO_INCREMENT for table `courses`
 --
@@ -208,12 +232,7 @@ ALTER TABLE `teachers`
 -- AUTO_INCREMENT for table `user`
 --
 ALTER TABLE `user`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
---
--- AUTO_INCREMENT for table `works`
---
-ALTER TABLE `works`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=5;
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
 /*!40101 SET CHARACTER_SET_RESULTS=@OLD_CHARACTER_SET_RESULTS */;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;

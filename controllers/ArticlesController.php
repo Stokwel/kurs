@@ -2,18 +2,15 @@
 
 namespace app\controllers;
 
+use app\models\Articles;
+use app\models\ArticlesSearch;
 use Yii;
-use app\models\Works;
-use app\models\WorksSearch;
 use yii\filters\AccessControl;
 use yii\web\Controller;
 use yii\web\NotFoundHttpException;
 use yii\filters\VerbFilter;
 
-/**
- * WorksController implements the CRUD actions for Works model.
- */
-class WorksController extends Controller
+class ArticlesController extends Controller
 {
     /**
      * @inheritdoc
@@ -32,7 +29,7 @@ class WorksController extends Controller
                 'rules' => [
                     [
                         'allow' => true,
-                        'roles' => ['student'],
+                        'roles' => ['author'],
                     ],
                 ],
             ],
@@ -45,11 +42,13 @@ class WorksController extends Controller
      */
     public function actionIndex()
     {
-        $searchModel = new WorksSearch();
-        $params = Yii::$app->request->queryParams;
-        $params['WorksSearch']['user_id'] = Yii::$app->user->getId();
-        $dataProvider = $searchModel->search($params);
+        $searchModel = new ArticlesSearch();
 
+        $params = Yii::$app->request->queryParams;
+        $params['ArticlesSearch']['user_id'] = Yii::$app->user->getId();
+        
+        $dataProvider = $searchModel->search($params);
+        
         return $this->render('index', [
             'searchModel' => $searchModel,
             'dataProvider' => $dataProvider,
@@ -75,7 +74,7 @@ class WorksController extends Controller
      */
     public function actionCreate()
     {
-        $model = new Works();
+        $model = new Articles();
 
         if ($model->load(Yii::$app->request->post()) && $model->save()) {
             return $this->redirect(['view', 'id' => $model->id]);
@@ -108,7 +107,7 @@ class WorksController extends Controller
     }
 
     /**
-     * Deletes an existing Works model.
+     * Deletes an existing Articles model.
      * If deletion is successful, the browser will be redirected to the 'index' page.
      * @param integer $id
      * @return mixed
@@ -129,7 +128,7 @@ class WorksController extends Controller
      */
     protected function findModel($id)
     {
-        if (($model = Works::findOne($id)) !== null) {
+        if (($model = Articles::findOne($id)) !== null) {
             return $model;
         } else {
             throw new NotFoundHttpException('The requested page does not exist.');
