@@ -15,6 +15,7 @@ use Yii;
  * @property string $keywords
  * @property string $magazine_title
  * @property integer $deleted
+ * @property string $hash
  */
 class Articles extends \yii\db\ActiveRecord
 {
@@ -33,7 +34,7 @@ class Articles extends \yii\db\ActiveRecord
     {
         return [
             [['title', 'description', 'user_id', 'keywords', 'magazine_title'], 'required'],
-            [['title', 'description', 'keywords', 'magazine_title'], 'string'],
+            [['title', 'description', 'keywords', 'magazine_title', 'hash'], 'string'],
             [['user_id'], 'integer'],
         ];
     }
@@ -108,6 +109,10 @@ class Articles extends \yii\db\ActiveRecord
 
     public function beforeSave($insert)
     {
+        if ($this->isNewRecord) {
+            $this->hash = uniqid();
+        }
+
         return true;
     }
 }
