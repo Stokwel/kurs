@@ -46,10 +46,28 @@ class ArticlesController extends Controller
 
         $params = Yii::$app->request->queryParams;
         $params['ArticlesSearch']['user_id'] = Yii::$app->user->getId();
+        $params['ArticlesSearch']['confirmed'] = 1;
         
         $dataProvider = $searchModel->search($params);
         
         return $this->render('index', [
+            'searchModel' => $searchModel,
+            'dataProvider' => $dataProvider,
+        ]);
+    }
+
+    public function actionNonConfirmed()
+    {
+        $searchModel = new ArticlesSearch();
+
+        $params = Yii::$app->request->queryParams;
+        $params['ArticlesSearch']['user_id'] = Yii::$app->user->getId();
+        $params['ArticlesSearch']['confirmed'] = 0;
+        $params['ArticlesSearch']['deleted'] = 0;
+
+        $dataProvider = $searchModel->search($params);
+
+        return $this->render('non-confirmed', [
             'searchModel' => $searchModel,
             'dataProvider' => $dataProvider,
         ]);
@@ -96,6 +114,10 @@ class ArticlesController extends Controller
     {
         $model = $this->findModel($id);
 
+        if ($model->user_id != Yii::$app->user->id) {
+            return $this->goBack();
+        }
+
         if ($model->load(Yii::$app->request->post()) && $model->save()) {
             return $this->redirect(['view', 'id' => $model->id]);
         } else {
@@ -114,7 +136,13 @@ class ArticlesController extends Controller
      */
     public function actionDelete($id)
     {
-        $this->findModel($id)->delete();
+        $model = $this->findModel($id);
+
+        if ($model->user_id != Yii::$app->user->id) {
+            return $this->goBack();
+        }
+
+        $model->delete();
 
         return $this->redirect(['index']);
     }

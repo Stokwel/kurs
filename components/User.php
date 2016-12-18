@@ -14,12 +14,11 @@ class User extends \yii\web\User
     public function getHomeUrl()
     {
         $identity  = $this->getIdentity();
-        $url       = 'authors/index';
-        /*if ($teacherId == -1) {
-            $url = 'admin/index';
-        } elseif ($teacherId > 0) {
-            $url = 'teacher/index';
-        }*/
+        $url       = 'index';
+
+        if ($identity->role == $this->roles['admin']) {
+            $url = '/admin/index';
+        }
 
         return $url;
     }
@@ -32,5 +31,15 @@ class User extends \yii\web\User
         }
 
         return false;
+    }
+
+    public function isAdmin()
+    {
+        $identity  = $this->getIdentity();
+        if (!$identity) {
+            return false;
+        }
+
+        return $this->getIdentity()->role == $this->roles['admin'];
     }
 }

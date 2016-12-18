@@ -3,11 +3,10 @@
 namespace app\controllers;
 
 use app\models\ArticlesSearch;
-use app\models\Courses;
-use app\models\CoursesSearch;
-use app\models\News;
-use app\models\NewsSearch;
+use app\models\Collaboration;
+use app\models\User;
 use Yii;
+use yii\data\ActiveDataProvider;
 use yii\filters\AccessControl;
 use yii\web\Controller;
 use app\models\LoginForm;
@@ -43,28 +42,17 @@ class SiteController extends Controller
 
     public function actionIndex()
     {
-        return $this->render('index');
-    }
+        if (Yii::$app->user->isAdmin()) {
+            return  Yii::$app->response->redirect(Yii::$app->user->getHomeUrl());
+        }
 
-    public function actionNews()
-    {
-        $searchModel = new NewsSearch();
-        $dataProvider = $searchModel->search(Yii::$app->request->queryParams);
+        $collaboration = [];
+        if (Yii::$app->user->id) {
+            $collaboration = Collaboration::getNonConfirmed(Yii::$app->user->id);
+        }
 
-        return $this->render('news', [
-            'newsSearch' => $searchModel,
-            'newsData' => $dataProvider,
-        ]);
-    }
-
-    public function actionCourses()
-    {
-        $searchModel = new CoursesSearch();
-        $dataProvider = $searchModel->search(Yii::$app->request->queryParams);
-
-        return $this->render('courses', [
-            'searchModel' => $searchModel,
-            'dataProvider' => $dataProvider,
+        return $this->render('index', [
+            'countCollaboration' => count($collaboration)
         ]);
     }
 
@@ -72,6 +60,9 @@ class SiteController extends Controller
     {
         $searchModel = new ArticlesSearch();
         $params = Yii::$app->request->queryParams;
+        if (!Yii::$app->user->isAdmin()) {
+            $params['ArticlesSearch']['deleted'] = 0;
+        }
         $dataProvider = $searchModel->search($params);
 
         return $this->render('articles', [
@@ -80,17 +71,17 @@ class SiteController extends Controller
         ]);
     }
 
-    public function actionNew($id)
+    public function actionAuthors()
     {
-        return $this->render('new', [
-            'model' => News::findOne(['id' => $id]),
+        $dataProvider = new ActiveDataProvider([
+            'query' => User::getAuthors(),
+            'pagination' => [
+                'pageSize' => 5,
+            ],
         ]);
-    }
 
-    public function actionCourse($id)
-    {
-        return $this->render('course', [
-            'model' => Courses::findOne(['id' => $id]),
+        return $this->render('authors', [
+            'dataProvider' => $dataProvider,
         ]);
     }
 

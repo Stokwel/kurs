@@ -1,23 +1,19 @@
 <?php
-
 use yii\helpers\Html;
-use \yii\helpers\Url;
-use yii\widgets\ListView;
+use \yii\widgets\ListView;
 
 /* @var $this yii\web\View */
-/* @var $searchModel app\models\CoursesSearch */
 /* @var $dataProvider yii\data\ActiveDataProvider */
 
-$this->title = 'Все курсы';
+$this->title = 'Авторы';
 $this->params['breadcrumbs'][] = $this->title;
 ?>
-<div class="courses-index">
+<div class="works-index">
 
     <h1><?= Html::encode($this->title) ?></h1>
 
     <?= ListView::widget([
         'dataProvider' => $dataProvider,
-        'itemView' => '_courseList'
+        'itemView' => '_author',
     ]); ?>
-
 </div>

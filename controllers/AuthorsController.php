@@ -2,6 +2,7 @@
 
 namespace app\controllers;
 
+use app\models\Collaboration;
 use app\models\Works;
 use app\models\WorksSearch;
 use Yii;
@@ -37,30 +38,22 @@ class AuthorsController extends Controller
 
     public function actionIndex()
     {
-        return $this->render('index');
-    }
+        $user = Yii::$app->getUser()->getIdentity();
 
-    public function actionWorks()
-    {
-        $searchModel = new WorksSearch();
-        $params = Yii::$app->request->queryParams;
-        $dataProvider = $searchModel->search($params);
+        $collaboration = Collaboration::getNonConfirmed(Yii::$app->user->id);
 
-        return $this->render('articles', [
-            'searchModel' => $searchModel,
-            'dataProvider' => $dataProvider,
+        return $this->render('index', [
+            'user' => $user,
+            'countCollaboration' => count($collaboration)
         ]);
     }
 
-    public function actionRating($id)
+    public function actionConfirm($id)
     {
-        $model = Works::findOne($id);
-        if ($model->load(Yii::$app->request->post()) && $model->save()) {
-            return $this->redirect(['works']);
-        } else {
-            return $this->render('rating', [
-                'model' => $model
-            ]);
-        }
+        $collaboration = Collaboration::findOne(['article_id' => $id, 'user_id' => Yii::$app->user->id]);
+        $collaboration->confirmed = 1;
+        $collaboration->save();
+
+        return  Yii::$app->response->redirect(Url::to(['authors/index']));
     }
 }

@@ -156,8 +156,18 @@ class User extends ActiveRecord implements IdentityInterface
         return $salt;
     }
 
+    public static function getAuthors()
+    {
+        return self::find()->where(['role' => 0]);
+    }
+
     public static function getUsersList()
     {
         return self::find()->select(['CONCAT([[second_name]]," ",[[first_name]])', 'id'])->indexBy('id')->where(['role' => 0])->column();
+    }
+
+    public static function getCollaborationsList($userId)
+    {
+        return self::find()->select(['CONCAT([[second_name]]," ",[[first_name]])', 'id'])->indexBy('id')->where(['role' => 0])->andWhere('id != ' . $userId)->column();
     }
 }

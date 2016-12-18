@@ -21,12 +21,12 @@ use app\models\User;
 
     <?= $form->field($model, 'description')->textarea(['rows' => 6]) ?>
 
-    <?= $form->field($model, 'collaborations')->dropDownList(User::getUsersList())?>
+    <?= $form->field($model, 'userCollaboration')->dropDownList(User::getCollaborationsList($userId), ['prompt' => 'Выберите соавтора'])?>
 
     <input type="hidden" name="Articles[user_id]" value="<?=$userId?>"/>
 
     <div class="form-group">
-        <?= Html::submitButton($model->isNewRecord ? 'Create' : 'Update', ['class' => $model->isNewRecord ? 'btn btn-success' : 'btn btn-primary']) ?>
+        <?= Html::submitButton($model->isNewRecord ? 'Добавить' : 'Изменить', ['class' => $model->isNewRecord ? 'btn btn-success' : 'btn btn-primary']) ?>
     </div>
 
     <?php ActiveForm::end(); ?>
