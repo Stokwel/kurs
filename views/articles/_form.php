@@ -21,6 +21,8 @@ use app\models\User;
 
     <?= $form->field($model, 'description')->textarea(['rows' => 6]) ?>
 
+    <?= $form->field($model, 'authors')->textInput() ?>
+
     <?= $form->field($model, 'userCollaboration')->dropDownList(User::getCollaborationsList($userId), ['prompt' => 'Выберите соавтора'])?>
 
     <input type="hidden" name="Articles[user_id]" value="<?=$userId?>"/>

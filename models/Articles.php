@@ -16,6 +16,7 @@ use Yii;
  * @property string $magazine_title
  * @property integer $deleted
  * @property string $hash
+ * @property string $authors
  */
 class Articles extends \yii\db\ActiveRecord
 {
@@ -34,7 +35,7 @@ class Articles extends \yii\db\ActiveRecord
     {
         return [
             [['title', 'description', 'user_id', 'keywords', 'magazine_title'], 'required'],
-            [['title', 'description', 'keywords', 'magazine_title', 'hash'], 'string'],
+            [['title', 'description', 'keywords', 'magazine_title', 'hash', 'authors'], 'string'],
             [['user_id'], 'integer'],
         ];
     }
@@ -51,7 +52,8 @@ class Articles extends \yii\db\ActiveRecord
             'keywords' => 'Ключевые слова',
             'magazine_title' => 'Название журнала',
             'created_at' => 'Дата добавления',
-            'userCollaboration' => 'Соавтор'
+            'userCollaboration' => 'Соавтор',
+            'authors' => 'Соавторы'
 
         ];
     }

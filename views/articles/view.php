@@ -31,7 +31,8 @@ $this->params['breadcrumbs'][] = $this->title;
             'title:ntext',
             'magazine_title:ntext',
             'keywords:ntext',
-            'description:ntext'
+            'description:ntext',
+            'authors:ntext'
         ],
     ]) ?>
 
